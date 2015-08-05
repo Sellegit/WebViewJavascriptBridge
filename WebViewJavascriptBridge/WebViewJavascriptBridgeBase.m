@@ -119,10 +119,12 @@ static bool logging = false;
         NSBundle *bundle = _resourceBundle ? _resourceBundle : [NSBundle mainBundle];
         NSString *filePath = [bundle pathForResource:@"WebViewJavascriptBridge.js" ofType:@"txt"];
         NSString *js = [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:nil];
+        if (filePath == nil || js == nil || [@"" isEqualToString:js]) {
+            [NSException raise:@"Resource not found" format:@"WebViewJavascriptBridge.js not found in bundle %s", [bundle description]];
+        }
         [self _evaluateJavascript:js];
         [self dispatchStartUpMessageQueue];
     }
-    
 }
 
 - (void)dispatchStartUpMessageQueue {
